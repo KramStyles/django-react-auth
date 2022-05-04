@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from rest_framework import generics, views
 
-# Create your views here.
+
+class RegisterApiView(views.APIView):
+    def post(self, request):
+        pass
