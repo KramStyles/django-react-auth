@@ -1,5 +1,5 @@
 from django.contrib.auth import login, authenticate
-from rest_framework import generics, views, response, status, exceptions
+from rest_framework import generics, views, response, status, exceptions, authentication
 
 from . import serializers
 from .models import User
@@ -42,3 +42,14 @@ class LoginApiView(generics.GenericAPIView):
         resp.data['access_token'] = access_token
         resp.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
         return resp
+
+
+class UserApiView(generics.ListAPIView):
+    serializer_class = serializers.RegisterSerializer
+    queryset = User.objects.all()
+
+    def get(self, request):
+        auth = authentication.get_authorization_header(request).split()
+        if auth and len(auth) == 2:
+            token = auth[1].decode('utf-8')
+        return response.Response(token)
