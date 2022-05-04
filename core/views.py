@@ -3,6 +3,7 @@ from rest_framework import generics, views, response, status, exceptions
 
 from . import serializers
 from .models import User
+from .jwt_auth import gen_token
 
 
 class RegisterApiView(generics.ListCreateAPIView):
@@ -31,6 +32,13 @@ class LoginApiView(generics.GenericAPIView):
         user = authenticate(request, username=email, password=password)
         if user:
             serializer = self.serializer_class(user)
+
+            access_token = gen_token(serializer.data)
+            refresh_token = gen_token(serializer.data, 1)
         else:
             raise exceptions.AuthenticationFailed('Invalid credentials')
-        return response.Response(serializer.data)
+
+        resp = response.Response(serializer.data)
+        resp.data['access_token'] = access_token
+        resp.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
+        return resp

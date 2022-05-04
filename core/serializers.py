@@ -11,7 +11,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         # Prevents the password from showing after submission
         extra_kwargs = {
-            # 'password': {'write_only': True},
+            'password': {'write_only': True},
         }
 
     def create(self, validated_data):
