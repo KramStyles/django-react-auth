@@ -3,7 +3,7 @@ from rest_framework import generics, views, response, status, exceptions, authen
 
 from . import serializers
 from .models import User
-from .jwt_auth import gen_token, JWTAuthentication
+from .jwt_auth import gen_token, JWTAuthentication, decode_token
 
 
 class RegisterApiView(generics.ListCreateAPIView):
@@ -52,3 +52,23 @@ class UserApiView(generics.ListAPIView):
 
     def get(self, request):
         return response.Response(request.user)
+
+
+class RefreshApiView(views.APIView):
+    def get(self, request):
+        refresh_token = request.COOKIES.get('refresh_token')
+        user = decode_token(refresh_token)['data']
+
+        access_token = gen_token(user)
+        return response.Response({"message": "Token refreshed successfully", 'refresh_token': refresh_token,  'access_token': access_token}, status=status.HTTP_201_CREATED)
+
+
+class LogoutApiView(views.APIView):
+    def get(self, request):
+        resp = response.Response()
+        resp.delete_cookie(key='refresh_token')
+        resp.data = {
+            'message': 'Logged out!'
+        }
+        resp.status_code = status.HTTP_200_OK
+        return resp
