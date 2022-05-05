@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta, timezone
+
 from django.contrib.auth import login, authenticate
-from rest_framework import generics, views, response, status, exceptions, authentication
+from rest_framework import generics, views, response, status, exceptions
 
 from . import serializers
-from .models import User
+from .models import User, UserToken
 from .jwt_auth import gen_token, JWTAuthentication, decode_token
 
 
@@ -35,6 +37,12 @@ class LoginApiView(generics.GenericAPIView):
 
             access_token = gen_token(serializer.data)
             refresh_token = gen_token(serializer.data, 1)
+
+            UserToken.objects.create(
+                user=user, token=refresh_token,
+                expired_at=datetime.utcnow() + timedelta(days=7)
+            )
+
         else:
             raise exceptions.AuthenticationFailed('Invalid credentials')
 
@@ -59,14 +67,21 @@ class RefreshApiView(views.APIView):
         refresh_token = request.COOKIES.get('refresh_token')
         user = decode_token(refresh_token)['data']
 
+        if not UserToken.objects.filter(user_id=user['id'], token=refresh_token, expired_at__gt=datetime.now(tz=timezone.utc)).exists():
+            raise exceptions.AuthenticationFailed('Token Unauthenticated')
+
         access_token = gen_token(user)
-        return response.Response({"message": "Token refreshed successfully", 'refresh_token': refresh_token,  'access_token': access_token}, status=status.HTTP_201_CREATED)
+        return response.Response({"message": "Token refreshed successfully", 'refresh_token': refresh_token, 'access_token': access_token}, status=status.HTTP_201_CREATED)
 
 
 class LogoutApiView(views.APIView):
     def get(self, request):
+        refresh_token = request.COOKIES.get('refresh_token')
+        UserToken.objects.filter(token=refresh_token).delete()
+
         resp = response.Response()
         resp.delete_cookie(key='refresh_token')
+
         resp.data = {
             'message': 'Logged out!'
         }
