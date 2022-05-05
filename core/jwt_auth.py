@@ -2,7 +2,18 @@ import jwt
 from datetime import datetime, timedelta
 
 from django.conf import settings
-from rest_framework import exceptions
+from rest_framework import exceptions, authentication
+
+
+class JWTAuthentication(authentication.BaseAuthentication):
+    def authenticate(self, request):
+        auth = authentication.get_authorization_header(request).split()
+        if auth and len(auth) == 2:
+            token = auth[1].decode('utf-8')
+            data = decode_token(token)
+
+            return data, None  # Included the None to allow unpacking for data
+        raise exceptions.AuthenticationFailed('Unauthenticated!')
 
 
 def gen_token(data, token_type=''):
@@ -21,5 +32,5 @@ def decode_token(token):
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms='HS512')
         return payload
-    except Exception:
-        raise exceptions.AuthenticationFailed('Invalid Token Provided')
+    except Exception as err:
+        raise exceptions.AuthenticationFailed({'message': 'Invalid Token Provided', 'error': str(err)})

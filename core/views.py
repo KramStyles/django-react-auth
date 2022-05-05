@@ -3,7 +3,7 @@ from rest_framework import generics, views, response, status, exceptions, authen
 
 from . import serializers
 from .models import User
-from .jwt_auth import gen_token
+from .jwt_auth import gen_token, JWTAuthentication
 
 
 class RegisterApiView(generics.ListCreateAPIView):
@@ -48,8 +48,7 @@ class UserApiView(generics.ListAPIView):
     serializer_class = serializers.RegisterSerializer
     queryset = User.objects.all()
 
+    authentication_classes = [JWTAuthentication]
+
     def get(self, request):
-        auth = authentication.get_authorization_header(request).split()
-        if auth and len(auth) == 2:
-            token = auth[1].decode('utf-8')
-        return response.Response(token)
+        return response.Response(request.user)
