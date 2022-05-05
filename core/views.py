@@ -125,4 +125,22 @@ class ForgotApiView(views.APIView):
 
 
 class ResetApiView(views.APIView):
-    pass
+    def post(self, request):
+        password = request.data['password']
+        confirm = request.data['confirm']
+        token = request.GET.get('token')
+
+        print(password, confirm, token)
+
+        if password != confirm:
+            raise exceptions.APIException('Passwords do not match')
+        else:
+            reset_model = Reset.objects.get(token=token)
+            if not reset_model:
+                raise exceptions.APIException('Invalid link')
+
+            user = User.objects.get(email=reset_model.email)
+            user.set_password(password)
+            user.save()
+
+        return response.Response({'message': 'Success', 'detail': 'Password changed'})

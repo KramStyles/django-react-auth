@@ -10,5 +10,5 @@ urlpatterns = [
     path('refresh/', views.RefreshApiView.as_view(), name='api-refresh'),
     path('logout/', views.LogoutApiView.as_view(), name='api-logout'),
     path('forgot/', views.ForgotApiView.as_view(), name='api-forgot'),
-    path('reset/', views.ForgotApiView.as_view(), name='api-reset'),
+    path('reset/', views.ResetApiView.as_view(), name='api-reset'),
 ]
