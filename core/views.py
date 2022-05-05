@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from secrets import token_urlsafe
 
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import reverse
 from rest_framework import generics, views, response, status, exceptions
@@ -38,6 +38,7 @@ class LoginApiView(generics.GenericAPIView):
         user = authenticate(request, username=email, password=password)
         if user:
             serializer = self.serializer_class(user)
+            login(request, user)
 
             access_token = gen_token(serializer.data)
             refresh_token = gen_token(serializer.data, 1)
@@ -71,11 +72,13 @@ class RefreshApiView(views.APIView):
         refresh_token = request.COOKIES.get('refresh_token')
         user = decode_token(refresh_token)['data']
 
-        if not UserToken.objects.filter(user_id=user['id'], token=refresh_token, expired_at__gt=datetime.now(tz=timezone.utc)).exists():
+        if not UserToken.objects.filter(user_id=user['id'], token=refresh_token,
+                                        expired_at__gt=datetime.now(tz=timezone.utc)).exists():
             raise exceptions.AuthenticationFailed('Token Unauthenticated')
 
         access_token = gen_token(user)
-        return response.Response({"message": "Token refreshed successfully", 'refresh_token': refresh_token, 'access_token': access_token}, status=status.HTTP_201_CREATED)
+        return response.Response({"message": "Token refreshed successfully", 'refresh_token': refresh_token,
+                                  'access_token': access_token}, status=status.HTTP_201_CREATED)
 
 
 class LogoutApiView(views.APIView):
@@ -85,6 +88,7 @@ class LogoutApiView(views.APIView):
 
         resp = response.Response()
         resp.delete_cookie(key='refresh_token')
+        logout(request)
 
         resp.data = {
             'message': 'Logged out!'
@@ -104,7 +108,8 @@ class ForgotApiView(views.APIView):
                 relative_url = reverse('api-reset')
                 data = {
                     'subject': 'Password Reset',
-                    'body': f"This is a message to reset your password. Click link to reset http://{get_current_site(request).domain}{relative_url}?token={token}",
+                    'body': f"This is a message to reset your password. "
+                            f"Click link to reset http://{get_current_site(request).domain}{relative_url}?token={token}",
                     'receiver': email
                 }
 
@@ -117,3 +122,7 @@ class ForgotApiView(views.APIView):
                 return response.Response({'message': 'Error', 'details': str(err)}, status=status.HTTP_400_BAD_REQUEST)
 
         return response.Response({'message': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetApiView(views.APIView):
+    pass
