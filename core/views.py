@@ -2,11 +2,14 @@ from datetime import datetime, timedelta, timezone
 from secrets import token_urlsafe
 
 from django.contrib.auth import login, authenticate
+from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import reverse
 from rest_framework import generics, views, response, status, exceptions
 
 from . import serializers
 from .models import User, UserToken, Reset
 from .jwt_auth import gen_token, JWTAuthentication, decode_token
+from .util import Utils
 
 
 class RegisterApiView(generics.ListCreateAPIView):
@@ -90,11 +93,27 @@ class LogoutApiView(views.APIView):
         return resp
 
 
-class ResetApiView(views.APIView):
+class ForgotApiView(views.APIView):
     def post(self, request):
         email = request.data['email']
         if User.objects.filter(email=email).exists():
             token = token_urlsafe(30)
-            return response.Response({'email': email, 'token': token}, status=status.HTTP_200_OK)
+
+            try:
+
+                relative_url = reverse('api-reset')
+                data = {
+                    'subject': 'Password Reset',
+                    'body': f"This is a message to reset your password. Click link to reset http://{get_current_site(request).domain}{relative_url}?token={token}",
+                    'receiver': email
+                }
+
+                Utils.send_email(data)
+
+                Reset.objects.create(email=email, token=token)
+
+                return response.Response({'message': 'Success', 'details': 'Reset email sent'}, status=status.HTTP_201_CREATED)
+            except Exception as err:
+                return response.Response({'message': 'Error', 'details': str(err)}, status=status.HTTP_400_BAD_REQUEST)
 
         return response.Response({'message': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
