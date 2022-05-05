@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta, timezone
+from secrets import token_urlsafe
 
 from django.contrib.auth import login, authenticate
 from rest_framework import generics, views, response, status, exceptions
 
 from . import serializers
-from .models import User, UserToken
+from .models import User, UserToken, Reset
 from .jwt_auth import gen_token, JWTAuthentication, decode_token
 
 
@@ -87,3 +88,13 @@ class LogoutApiView(views.APIView):
         }
         resp.status_code = status.HTTP_200_OK
         return resp
+
+
+class ResetApiView(views.APIView):
+    def post(self, request):
+        email = request.data['email']
+        if User.objects.filter(email=email).exists():
+            token = token_urlsafe(30)
+            return response.Response({'email': email, 'token': token}, status=status.HTTP_200_OK)
+
+        return response.Response({'message': 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)

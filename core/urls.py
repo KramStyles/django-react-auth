@@ -9,4 +9,5 @@ urlpatterns = [
     path('user/', views.UserApiView.as_view(), name='api-user'),
     path('refresh/', views.RefreshApiView.as_view(), name='api-refresh'),
     path('logout/', views.LogoutApiView.as_view(), name='api-logout'),
+    path('reset/', views.ResetApiView.as_view(), name='api-reset'),
 ]

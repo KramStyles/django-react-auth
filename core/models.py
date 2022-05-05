@@ -18,3 +18,8 @@ class UserToken(models.Model):
     token = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     expired_at = models.DateTimeField()
+
+
+class Reset(models.Model):
+    email = models.CharField(max_length=255)
+    token = models.TextField(unique=True)
