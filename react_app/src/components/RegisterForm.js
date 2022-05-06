@@ -1,8 +1,10 @@
-import {Link} from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 
 import logo from '../logo.svg'
 import './LoginForm.css'
 import {useState} from "react";
+
+// import axios from "axios";
 
 export const RegisterForm = () => {
 
@@ -11,9 +13,31 @@ export const RegisterForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
+    const [redirect, setRedirect] = useState(false);
 
-    const submit = (e) => {
+    const submit = async (e) => {
         e.preventDefault();
+
+        if(password.length < 4 || password !== confirm){
+            alert('Wrong password input. Check length and make sure both match!');
+        } else {
+            // await axios.post('http://localhost:8080/api/v1/register', {
+            //     'first_name': firstname,
+            //     'last_name': lastname,
+            //     'email': email,
+            //     'password': password,
+            // });
+
+            setRedirect(true);
+        }
+
+        if(redirect){
+            console.log(firstname.concat(' ', lastname, ' ', password, ' ', email));
+            // window.location.replace('/login');
+
+            return <Navigate to='/login' />
+        }
+
     }
 
     return (
