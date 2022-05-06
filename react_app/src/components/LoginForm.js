@@ -23,8 +23,9 @@ export default function LoginForm() {
                         <input type="checkbox" value="remember-me"/> Remember me
                     </label>
                 </div>
-                <button className="w-100 btn btn-lg btn-primary" type="submit">Login</button>
+                <button className="w-100 btn btn-lg btn-info" type="submit">Login</button>
             </form>
+            <p className={"text-center text-danger mt-3"}>No account yet? Click to <a href="/register">Register</a></p>
         </main>
     );
 }
