@@ -1,3 +1,5 @@
+import {Link} from "react-router-dom";
+
 import logo from '../logo.svg'
 import './LoginForm.css'
 
@@ -25,7 +27,7 @@ export default function LoginForm() {
                 </div>
                 <button className="w-100 btn btn-lg btn-info" type="submit">Login</button>
             </form>
-            <p className={"text-center text-danger mt-3"}>No account yet? Click to <a href="/register">Register</a></p>
+            <p className={"text-center mt-3"}>No account yet? Click to <Link to={"/register"} className={"text-decoration-none text-info"}>Register</Link></p>
         </main>
     );
 }

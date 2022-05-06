@@ -1,3 +1,5 @@
+import {Link} from "react-router-dom";
+
 import logo from '../logo.svg'
 import './LoginForm.css'
 
@@ -35,7 +37,7 @@ export const RegisterForm = () => {
 
                 <button className="w-100 btn btn-lg btn-info" type="submit">Register</button>
             </form>
-             <p className={"text-center text-danger mt-3"}>Already registered? <a href="/login">Click to Login</a></p>
+             <p className={"text-center mt-3"}>Already registered? <Link to={"/login"} className={"text-info text-decoration-none"}>Click to Login</Link></p>
         </main>
     )
 }
