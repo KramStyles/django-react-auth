@@ -35,6 +35,9 @@ class LoginApiView(generics.GenericAPIView):
         email = request.data['email']
         password = request.data['password']
 
+        if not email or not password:
+            raise exceptions.AuthenticationFailed('email and password must be inputed')
+
         user = authenticate(request, username=email, password=password)
         if user:
             serializer = self.serializer_class(user)
@@ -54,6 +57,7 @@ class LoginApiView(generics.GenericAPIView):
         resp = response.Response(serializer.data)
         resp.data['access_token'] = access_token
         resp.set_cookie(key='refresh_token', value=refresh_token, httponly=True)
+        resp.set_cookie(key='access_token', value=access_token, httponly=True)
         return resp
 
 

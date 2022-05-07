@@ -8,6 +8,7 @@ from rest_framework import exceptions, authentication
 class JWTAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         auth = authentication.get_authorization_header(request).split()
+        print('AUTH HEAD', auth)
         if auth and len(auth) == 2:
             token = auth[1].decode('utf-8')
             data = decode_token(token)
