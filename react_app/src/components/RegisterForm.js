@@ -6,7 +6,7 @@ import {useState} from "react";
 
 // import axios from "axios";
 
-export const RegisterForm = () => {
+export default function RegisterForm () {
 
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
@@ -33,9 +33,9 @@ export const RegisterForm = () => {
 
         if(redirect){
             console.log(firstname.concat(' ', lastname, ' ', password, ' ', email));
-            // window.location.replace('/login');
 
-            return <Navigate to='/login' />
+            return <Navigate to={'/'} />
+            // return <Navigate replace to='/login' />
         }
 
     }

@@ -20,12 +20,12 @@ export default function LoginForm() {
         }, {withCredentials: true});
         // With Credentials added because we are expecting token and cookies from backend
 
-        console.log(response, ' Response');
+        // console.log(response, ' Response');
         setRedirect(true);
     }
 
     if (redirect){
-        return <Navigate replace to={'/'} />
+        return <Navigate to={'/'} />
     }
 
     return (

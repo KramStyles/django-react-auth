@@ -2,7 +2,7 @@ import {BrowserRouter, Routes, Route} from "react-router-dom";
 
 import './App.css';
 import LoginForm from "./components/LoginForm";
-import {RegisterForm} from "./components/RegisterForm";
+import RegisterForm from "./components/RegisterForm";
 import {Welcome} from "./components/Welcome";
 
 import {Navbar} from "./components/Navbar";
