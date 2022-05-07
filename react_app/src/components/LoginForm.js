@@ -15,7 +15,7 @@ export default function LoginForm() {
     const submit = async (e) => {
         e.preventDefault();
 
-        const response = await axios.post('http://localhost:8080/api/v1/login/', {
+        const response = await axios.post('http://localhost:5000/api/v1/login/', {
             email: email, password: password
         }, {withCredentials: true});
         // With Credentials added because we are expecting token and cookies from backend
