@@ -21,7 +21,7 @@ export default function RegisterForm () {
         if(password.length < 4 || password !== confirm){
             alert('Wrong password input. Check length and make sure both match!');
         } else {
-            // await axios.post('http://localhost:8080/api/v1/register', {
+            // await axios.post('register/', {
             //     'first_name': firstname,
             //     'last_name': lastname,
             //     'email': email,

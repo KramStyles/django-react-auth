@@ -21,7 +21,7 @@ def gen_token(data, token_type=''):
     if token_type:
         expire_at = datetime.utcnow() + timedelta(days=7)
     else:
-        expire_at = datetime.utcnow() + timedelta(seconds=3000)
+        expire_at = datetime.utcnow() + timedelta(seconds=300)
 
     return jwt.encode({
         'data': data,

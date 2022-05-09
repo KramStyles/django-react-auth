@@ -10,8 +10,7 @@ export const Welcome = () => {
         (async () => {
             try {
 
-                const response = await axios.get('http://localhost:5000/api/v1/user/', {
-                    withCredentials: true,
+                const response = await axios.get('user/', {
                     headers: {"Authorization": `Bearer ${localStorage.getItem('access_token')}`}
                 });
 
