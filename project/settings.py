@@ -135,7 +135,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True  # Allow both access and reset token to be seen
 
 EMAIL_USE_TLS = True
@@ -150,6 +150,7 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        # 'core.jwt_auth.JWTAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
     ]
 }

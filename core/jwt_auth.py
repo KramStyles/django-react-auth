@@ -5,7 +5,7 @@ from django.conf import settings
 from rest_framework import exceptions, authentication
 
 
-class JWTAuthentication(authentication.BaseAuthentication):
+class JWTAuthentication(authentication.TokenAuthentication):
     def authenticate(self, request):
         auth = authentication.get_authorization_header(request).split()
         print('AUTH HEAD', auth)
@@ -21,7 +21,7 @@ def gen_token(data, token_type=''):
     if token_type:
         expire_at = datetime.utcnow() + timedelta(days=7)
     else:
-        expire_at = datetime.utcnow() + timedelta(seconds=300)
+        expire_at = datetime.utcnow() + timedelta(seconds=3000)
 
     return jwt.encode({
         'data': data,

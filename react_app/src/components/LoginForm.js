@@ -14,13 +14,19 @@ export default function LoginForm() {
 
     const submit = async (e) => {
         e.preventDefault();
+        let cookie = document.cookie.split('=')[1]
+        // console.log(cookie)
+
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
         const response = await axios.post('http://localhost:5000/api/v1/login/', {
             email: email, password: password
+        // }, {withCredentials: true, headers: {'X-CSRFToken': cookie}});
         }, {withCredentials: true});
         // With Credentials added because we are expecting token and cookies from backend
-
-        // console.log(response, ' Response');
+        let access_token = response['data']['access_token'];
+        localStorage.setItem('access_token', access_token);
         setRedirect(true);
     }
 
