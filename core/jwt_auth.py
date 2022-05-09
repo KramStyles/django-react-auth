@@ -5,7 +5,7 @@ from django.conf import settings
 from rest_framework import exceptions, authentication
 
 
-class JWTAuthentication(authentication.BaseAuthentication):
+class JWTAuthentication(authentication.TokenAuthentication):
     def authenticate(self, request):
         auth = authentication.get_authorization_header(request).split()
         print('AUTH HEAD', auth)

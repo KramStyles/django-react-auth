@@ -2,17 +2,21 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 
 export const Welcome = () => {
+
     const [message, setMessage] = useState('You are not logged in');
 
+    // Assigns access token to a variable if it exists
     useEffect(() => {
         (async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/v1/user/', {withCredentials: true});
 
-                const user = response.data;
+                const response = await axios.get('user/', {
+                    headers: {"Authorization": `Bearer ${localStorage.getItem('access_token')}`}
+                });
 
-                console.log('USER');
-                console.log(user);
+                const user = response.data['data'];
+                setMessage(`${user['first_name']} ${user['last_name']}`);
+
             } catch (e) {
                 console.log('You are not logged in yet!')
             }

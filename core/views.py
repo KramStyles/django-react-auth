@@ -39,6 +39,7 @@ class LoginApiView(generics.GenericAPIView):
             raise exceptions.AuthenticationFailed('email and password must be inputed')
 
         user = authenticate(request, username=email, password=password)
+        print('wahala', user)
         if user:
             serializer = self.serializer_class(user)
             login(request, user)
