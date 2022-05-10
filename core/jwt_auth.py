@@ -8,7 +8,7 @@ from rest_framework import exceptions, authentication
 class JWTAuthentication(authentication.TokenAuthentication):
     def authenticate(self, request):
         auth = authentication.get_authorization_header(request).split()
-        print('AUTH HEAD', auth)
+        
         if auth and len(auth) == 2:
             token = auth[1].decode('utf-8')
             data = decode_token(token)
@@ -21,7 +21,7 @@ def gen_token(data, token_type=''):
     if token_type:
         expire_at = datetime.utcnow() + timedelta(days=7)
     else:
-        expire_at = datetime.utcnow() + timedelta(seconds=300)
+        expire_at = datetime.utcnow() + timedelta(seconds=30)
 
     return jwt.encode({
         'data': data,
