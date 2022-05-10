@@ -16,6 +16,10 @@ axios.interceptors.response.use(resp => resp, async error => {
             localStorage.setItem('access_token', access_token);
 
             // return axios(error.config);
+            setTimeout(()=>{
+                window.top.location = window.top.location;
+                // return axios(error.config);
+            }, 1000)
         }
     }
 
