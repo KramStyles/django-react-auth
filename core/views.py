@@ -83,7 +83,7 @@ class RefreshApiView(views.APIView):
 
         access_token = gen_token(user)
         return response.Response({"message": "Token refreshed successfully", 'refresh_token': refresh_token,
-                                  'access_token': access_token}, status=status.HTTP_201_CREATED)
+                                  'access_token': access_token}, status=status.HTTP_202_ACCEPTED)
 
 
 class LogoutApiView(views.APIView):
